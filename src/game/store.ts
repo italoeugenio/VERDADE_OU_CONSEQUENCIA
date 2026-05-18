@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { ITEMS } from "./items";
+import { ITEMS as FALLBACK_ITEMS } from "./items";
 import type {
+  Item,
   DrawnItem,
   FogoItem,
   MimicaItem,
@@ -25,6 +26,10 @@ type State = {
   tier: TierMode;
   usedTruths: Set<string>;
   current: DrawnItem | null;
+  items: Item[];
+  itemsSource: "sheet" | "fallback" | "loading";
+
+  setItems: (items: Item[], source: "sheet" | "fallback") => void;
 
   addPlayer: (name: string) => string | null;
   removePlayer: (id: string) => void;
@@ -49,6 +54,14 @@ export const useGame = create<State>((set, get) => ({
   tier: "leve",
   usedTruths: new Set<string>(),
   current: null,
+  items: FALLBACK_ITEMS,
+  itemsSource: "loading",
+
+  setItems: (items, source) =>
+    set({
+      items: items.length > 0 ? items : FALLBACK_ITEMS,
+      itemsSource: items.length > 0 ? source : "fallback",
+    }),
 
   addPlayer: (rawName) => {
     const name = rawName.trim();
@@ -86,11 +99,11 @@ export const useGame = create<State>((set, get) => ({
     }),
 
   drawTruth: () => {
-    const { tier, usedTruths, players, turnIdx } = get();
+    const { tier, usedTruths, players, turnIdx, items } = get();
     const player = players[turnIdx];
     if (!player || player.truthLives <= 0) return;
 
-    const pool = ITEMS.filter(
+    const pool = items.filter(
       (it) =>
         (it.category === "truth_general" || it.category === "most_likely") &&
         tierFilter(tier)(it),
@@ -117,11 +130,11 @@ export const useGame = create<State>((set, get) => ({
   },
 
   drawConsequence: () => {
-    const { tier } = get();
-    const mimicas = ITEMS.filter(
+    const { tier, items } = get();
+    const mimicas = items.filter(
       (it) => it.category === "mimica" && tierFilter(tier)(it),
     ) as MimicaItem[];
-    const fogos = ITEMS.filter(
+    const fogos = items.filter(
       (it) => it.category === "fogo_no_parquinho" && tierFilter(tier)(it),
     ) as FogoItem[];
 
