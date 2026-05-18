@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "motion/react";
 import { useGame } from "@/game/store";
-import type { TierMode } from "@/game/types";
+import { fetchItemsFromSheet } from "@/lib/items.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,6 +23,8 @@ function Setup() {
   const navigate = useNavigate();
   const players = useGame((s) => s.players);
   const tier = useGame((s) => s.tier);
+  const itemsSource = useGame((s) => s.itemsSource);
+  const setItems = useGame((s) => s.setItems);
   const addPlayer = useGame((s) => s.addPlayer);
   const removePlayer = useGame((s) => s.removePlayer);
   const setTier = useGame((s) => s.setTier);
@@ -29,6 +32,23 @@ function Setup() {
 
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const loadItems = useServerFn(fetchItemsFromSheet);
+
+  useEffect(() => {
+    let alive = true;
+    loadItems()
+      .then((res) => {
+        if (!alive) return;
+        setItems(res.items, res.source === "sheet" ? "sheet" : "fallback");
+      })
+      .catch(() => {
+        if (!alive) return;
+        setItems([], "fallback");
+      });
+    return () => {
+      alive = false;
+    };
+  }, [loadItems, setItems]);
 
   const canStart = players.length >= 2;
 
@@ -62,6 +82,11 @@ function Setup() {
         </motion.h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Edição neon · prepare a roda
+        </p>
+        <p className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
+          {itemsSource === "loading" && "carregando perguntas…"}
+          {itemsSource === "sheet" && "perguntas ao vivo da planilha"}
+          {itemsSource === "fallback" && "perguntas locais (offline)"}
         </p>
       </header>
 
