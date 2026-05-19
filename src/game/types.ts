@@ -1,13 +1,13 @@
 export type Tier = "leve" | "+18";
 export type Category =
-  | "truth_general"
-  | "most_likely"
+  | "verdade_padrao"
+  | "mais_provavel"
   | "mimica"
   | "fogo_no_parquinho";
 
 export type BaseItem = { id: string; tier: Tier; category: Category };
 export type TruthItem = BaseItem & {
-  category: "truth_general" | "most_likely";
+  category: "verdade_padrao" | "mais_provavel";
   text: string;
 };
 export type MimicaItem = BaseItem & { category: "mimica"; text: string };

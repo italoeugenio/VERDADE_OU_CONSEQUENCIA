@@ -105,7 +105,7 @@ export const useGame = create<State>((set, get) => ({
 
     const pool = items.filter(
       (it) =>
-        (it.category === "truth_general" || it.category === "most_likely") &&
+        (it.category === "verdade_padrao" || it.category === "mais_provavel") &&
         tierFilter(tier)(it),
     ) as TruthItem[];
 

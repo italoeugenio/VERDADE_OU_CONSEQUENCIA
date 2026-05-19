@@ -157,7 +157,7 @@ function Setup() {
           <TierButton
             active={tier === "both"}
             onClick={() => setTier("both")}
-            label="Leve + 18"
+            label="+18"
             sub="Conteúdo adulto"
             color="magenta"
           />
@@ -200,9 +200,8 @@ function TierButton({
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl bg-card/60 px-4 py-4 text-left transition ${border} ${
-        active ? "opacity-100" : "opacity-60"
-      }`}
+      className={`rounded-xl bg-card/60 px-4 py-4 text-left transition ${border} ${active ? "opacity-100" : "opacity-60"
+        }`}
     >
       <div className={`font-display text-base ${text}`}>{label}</div>
       <div className="text-xs text-muted-foreground">{sub}</div>

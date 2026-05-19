@@ -21,8 +21,8 @@ function parseRow(row: string[]): Item | null {
     };
   }
   if (
-    category === "truth_general" ||
-    category === "most_likely" ||
+    category === "verdade_padrao" ||
+    category === "mais_provavel" ||
     category === "mimica"
   ) {
     if (!text) return null;

@@ -173,7 +173,7 @@ function QuestionCard({
 
   const subtitle =
     current.kind === "truth"
-      ? current.item.category === "most_likely"
+      ? current.item.category === "mais_provavel"
         ? "Quem é mais provável"
         : "Verdade"
       : current.kind === "mimica"
@@ -195,7 +195,7 @@ function QuestionCard({
       </p>
       <p className="mt-4 text-2xl leading-snug">{body}</p>
 
-      {current.kind === "truth" && current.item.category === "most_likely" && (
+      {current.kind === "truth" && current.item.category === "mais_provavel" && (
         <p className="mt-3 text-xs text-muted-foreground">
           Votem na roda quem se encaixa melhor.
         </p>
@@ -211,11 +211,10 @@ function QuestionCard({
               <button
                 key={i}
                 onClick={() => setChosenComplement(i)}
-                className={`rounded-xl px-4 py-3 text-left text-sm transition ${
-                  chosenComplement === i
+                className={`rounded-xl px-4 py-3 text-left text-sm transition ${chosenComplement === i
                     ? "neon-border-magenta bg-secondary/15"
                     : "border border-border bg-card/40"
-                }`}
+                  }`}
               >
                 {c}
               </button>
